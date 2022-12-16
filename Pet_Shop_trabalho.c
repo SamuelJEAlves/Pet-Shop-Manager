@@ -3,24 +3,8 @@
 #include <stdlib.h>
 #include <locale.h>
 
-typedef struct PetRegistry{
 
-    char namePet[20];
-    float age;
-    float weight;
-    char petType[20];
-
-} PET;
-
-typedef struct OwnerRegistry{
-	
-    PET  pet[10];
-    char nameOwner[40];
-    char contact[11];
-
-} OWNER;
-
-typedef struct ServiceOrder{
+typedef struct Service_Order{
 	
     int serviceType;
     char veterinary[40];
@@ -32,7 +16,37 @@ typedef struct ServiceOrder{
 
 } SERVICE;
 
-typedef struct VetRegistry {
+typedef struct Pet_Registry{
+
+    SERVICE service;
+    char namePet[20];
+    float age;
+    float weight;
+    char petType[20];
+
+
+} PET;
+
+typedef struct Owner_Registry{
+	
+    PET  pet[10];
+    char nameOwner[40];
+    char contact[11];
+
+} OWNER;
+
+typedef struct Pet_Shop
+{    
+    int first;
+    int last;
+    int qtd;
+    SERVICE service[20];
+    OWNER owner[100];
+    
+}PETSHOP;
+
+
+typedef struct Vet_Registry {
  
     OWNER client[100];
     SERVICE job[10];
@@ -43,7 +57,7 @@ typedef struct VetRegistry {
 
 } VETERINARY;
 
-typedef struct PaymentRegistry {
+typedef struct Payment_Registry {
 	
 	OWNER pay[100];
 	char cpf[11];
@@ -75,6 +89,7 @@ void ownerRegister(OWNER *owner){
     fgets(owner->contact, 11, stdin);
     getchar();
 }
+
 void petRegister(PET *pet){
 	
 	printf("Digite o nome do pet:\n");
@@ -123,6 +138,14 @@ void serviceRegister(SERVICE *service){
 		break;
 	}
 }
+
+void startService(PETSHOP *petShop){
+    petShop->first = 0;
+    petShop->last = petShop->first;
+    petShop->qtd = 0;
+
+}
+
 void serviceStatus(SERVICE *service){
 }
 void changeVet(SERVICE *service){
@@ -135,8 +158,7 @@ void payService(){
 }
 void searchData(){
 }
-void closeSystem(){
-}
+
 
 /*void printData(OWNER *owner){
     printf("Nome do dono: %s\n", owner->nameOwner);
@@ -158,39 +180,38 @@ void menu(){
 }
 
 int main (){
-
     setlocale(LC_ALL, "Portuguese");
-    SERVICE service;
-    OWNER owner;
-    PET pet;
-    
-    int operation; 
+    PETSHOP petShop;
+    int ownerNumber, op, petNumber;
+
+    startService(&petShop);
+ 
     do{
         menu();
-        scanf("%d", &operation);
+        scanf("%d", &op);
         printf("\n");
 
-        switch(operation){
+        switch(op){
             case 1:
-            ownerRegister(OWNER &owner);
+            ownerRegister(&petShop.owner);
             break;
             case 2:
-            petRegister(PET &pet);
+            petRegister(petShop.owner[ownerNumber].pet);
             break;
             case 3:
-            serviceRegister(SERVICE &service);
+            serviceRegister(&petShop.owner[ownerNumber].pet[petNumber].service);
             break;
             case 4:
-            serviceStatus(SERVICE &service);
+            serviceStatus(&petShop.owner[ownerNumber].pet[petNumber].service);
             break;
             case 5:
-            changeVet(SERVICE &service);
+            changeVet(&petShop.owner[ownerNumber].pet[petNumber].service);
             break;
             case 6:
-            editPet(PET &pet);
+            editPet(&petShop.owner[ownerNumber].pet);
             break;
             case 7:
-            deletePet(PET &pet);
+            deletePet(&petShop.owner[ownerNumber].pet);
             break;
             case 8:
             payService();
@@ -199,14 +220,14 @@ int main (){
             searchData();
             break;
             case 10:
-            closeSystem();
+            printf("Obrigado por utilizar o nosso programa");           
             default:
             printf("Digite uma opcao valida!\n");
             break;
         }
         printf("\n");
     }
-    while ((operation) =! 8);
+    while ( op != 10);
 
     return 0;
 }
